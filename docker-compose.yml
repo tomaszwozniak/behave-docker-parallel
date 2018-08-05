@@ -32,3 +32,7 @@ services:
       - "5672:5672"
     labels:
       NAME: "rabbitmq1"
+  worker:
+    build: .
+    volumes:
+            - .:/opt/testing

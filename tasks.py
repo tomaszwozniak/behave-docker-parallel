@@ -1,7 +1,7 @@
 from celery import Celery
 from behave.__main__ import main as behave_main
 
-app = Celery('tasks', broker='pyamqp://rabbitmq:rabbitmq@localhost//')
+app = Celery('tasks', broker='pyamqp://rabbitmq:rabbitmq@rabbit1//')
 app.conf.task_default_queue = 'behave'
 
 
