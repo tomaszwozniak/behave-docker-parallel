@@ -32,6 +32,12 @@ services:
       - "5672:5672"
     labels:
       NAME: "rabbitmq1"
+  worker:
+    build: .
+    environment:
+      PYTHONPATH: "/opt/testing"
+    volumes:
+            - .:/opt/testing
   flower:
     build: flower
     command: flower --address=0.0.0.0 --port=5555 --broker_api=http://rabbitmq:rabbitmq@rabbit1:15672/api/
@@ -41,9 +47,3 @@ services:
         - rabbit1
     ports:
         - "5555:5555"
-  worker:
-    build: .
-    environment:
-      PYTHONPATH: "/opt/testing"
-    volumes:
-            - .:/opt/testing
