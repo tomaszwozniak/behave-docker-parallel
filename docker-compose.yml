@@ -32,15 +32,6 @@ services:
       - "5672:5672"
     labels:
       NAME: "rabbitmq1"
-  flower:
-    build: flower
-    command: flower --address=0.0.0.0 --port=5555 --broker_api=http://rabbitmq:rabbitmq@rabbit1:15672/api/
-    environment:
-        - CELERY_BROKER_URL=pyamqp://rabbitmq:rabbitmq@rabbit1//
-    links:
-        - rabbit1
-    ports:
-        - "5555:5555"
   worker:
     build: .
     environment:
