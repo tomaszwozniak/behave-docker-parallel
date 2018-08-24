@@ -10,10 +10,9 @@ app.conf.send_task_sent_event = True
 @app.task
 def delegate_test(scenario):
     argstable = [
-        'behave/features/django_admin/users_crud.feature',
+        'behave/features/django_admin/',
         '-n{}'.format(scenario.replace('Scenario: ', '').replace('\r', '')),
         '-f allure_behave.formatter:AllureFormatter',
         '-o%allure_result_folder%']
     behave_main(argstable)
     return scenario
-
