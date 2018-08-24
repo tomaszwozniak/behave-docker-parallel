@@ -18,4 +18,3 @@ Feature: Managing users
       When I create Stuff user
        And I remove Stuff user
       Then Stuff user is not visible on user list page
-#       And I should not be able to login as stuff user

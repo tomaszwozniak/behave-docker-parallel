@@ -45,3 +45,33 @@ def step_impl(context):
 @then('Stuff user is not visible on user list page')
 def step_impl(context):
     sleep(2)
+
+
+@when('I create new group')
+def step_impl(context):
+    sleep(5)
+
+
+@then('Created group is visible on the list')
+def step_impl(context):
+    sleep(1)
+
+
+@when('I add permission "can add user"')
+def step_impl(context):
+    sleep(3)
+
+
+@then('I should see "can add user" in "Choosen permissions"')
+def step_impl(context):
+    sleep(1)
+
+
+@when('I remove previously created group')
+def step_impl(context):
+    sleep(3)
+
+
+@then('Group is not visible on the list')
+def step_impl(context):
+    sleep(1)
