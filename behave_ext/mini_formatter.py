@@ -4,16 +4,10 @@ from __future__ import absolute_import
 from behave.formatter.base import Formatter
 
 
-# -----------------------------------------------------------------------------
-# CLASS: PlainFormatter
-# -----------------------------------------------------------------------------
 class MiniFormatter(Formatter):
     """
     Provides a simple plain formatter without coloring/formatting.
-    The formatter displays now also:
-       * multi-line text (doc-strings)
-       * table
-       * tags (maybe)
+    The formatter displays only scenario name
     """
     name = "plain"
     description = "Very basic formatter with maximum compatibility"
@@ -28,5 +22,3 @@ class MiniFormatter(Formatter):
         text = u"%s: %s" % (scenario.keyword, scenario.name)
         self.stream.write(text)
         self.stream.write(u"\n")
-
-

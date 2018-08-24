@@ -7,9 +7,6 @@ DEFAULT_BROWSER = 'firefox'
 DESIRED_CAPABILITIES = {
     'platform': 'ANY',
     'browserName': DEFAULT_BROWSER,
-    # 'chromeOptions': {
-    #     'args': ['--no-sandbox']
-    # },
     'version': '',
     'javascriptEnabled': True
 }
@@ -20,6 +17,7 @@ def before_all(context):
         WEBDRIVER_URL,
         desired_capabilities=DESIRED_CAPABILITIES
     )
+
 
 def after_all(context):
     context.browser.quit()
