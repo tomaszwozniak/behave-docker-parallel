@@ -5,7 +5,7 @@ Feature: Managing groups
       When I create new group
       Then Created group is visible on the list
 
-  Scenario: Updatiing group
+  Scenario: Updating group
      Given I am logged as Super user
       When I create new group
        And I add permission "can add user"
