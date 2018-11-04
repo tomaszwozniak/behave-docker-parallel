@@ -2,8 +2,8 @@ from behave import given, when, then
 from time import sleep
 
 
-@given('I am logged as Super user')
-def step_impl(context):
+@given('I am logged as {} user')
+def step_impl(context, user):
     pass
 
 
@@ -75,3 +75,4 @@ def step_impl(context):
 @then('Group is not visible on the list')
 def step_impl(context):
     sleep(1)
+    assert False, 'something went wrong'
