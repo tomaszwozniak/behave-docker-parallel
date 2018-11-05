@@ -31,7 +31,7 @@ def delegate_test(self, scenario):
         '-n', '{}{}'.format(replace_char(scenario), '$' if 'Outline' not in scenario else ''),
         '-f', 'allure_behave.formatter:AllureFormatter',
         '-f', 'pretty',
-        '-o%allure_result_folder%']
+        '-o%allure_result_folder%', '--no-skipped']
 
     old_stdout = sys.stdout
     io = StringIO()
