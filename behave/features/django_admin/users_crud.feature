@@ -18,3 +18,13 @@ Feature: Managing users
       When I create Stuff user
        And I remove Stuff user
       Then Stuff user is not visible on user list page
+
+  Scenario Outline: Deleting user outline
+     Given I am logged as <user> user
+      When I create Stuff user
+       And I remove Stuff user
+      Then Stuff user is not visible on user list page
+    Examples:
+          | user |
+          | foo  |
+          | bar  |
