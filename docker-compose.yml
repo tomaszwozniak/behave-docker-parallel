@@ -12,6 +12,13 @@ services:
     environment:
       - HUB_HOST=selenium-hub
       - HUB_PORT=4444
+  chrome:
+    image: selenium/node-chrome:3.141.5-astatine
+    depends_on:
+      - selenium-hub
+    environment:
+      - HUB_HOST=selenium-hub
+      - HUB_PORT=4444
   rabbit1:
     image: "rabbitmq:3-management"
     hostname: "rabbit1"
