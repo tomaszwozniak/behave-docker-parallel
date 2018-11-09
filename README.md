@@ -25,9 +25,9 @@ Start Selenium Hub and 1 Firefox & 1 Chrome
 docker-compose up --build
 ```
 
-Alternatively you can spin up multiple instances of FF and/or Chrome:
+Alternatively you can spin up multiple workers and instances of FF and/or Chrome:
 ```shell
-docker-compose up --build --scale firefox=3 --scale chrome=3
+docker-compose up --build --scale firefox=3 --scale chrome=3 --scale worker=6
 ```
 
 
