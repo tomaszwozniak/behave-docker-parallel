@@ -52,3 +52,9 @@ Selenium Grid Console is available via [http://localhost:4444/grid/console](http
 * Serve the report `allure serve -p 54321 allure_results`
 * Go to: [http://127.0.0.53:54321/](http://127.0.0.53:54321/)
 
+
+### RabbitMQ Management UI Access
+
+Once RabbitMQ is running you can access Management UI via: [http://localhost:15672/](http://localhost:15672/)
+Credentials are: rabbitmq/rabbitmq
+
