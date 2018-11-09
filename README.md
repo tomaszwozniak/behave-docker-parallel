@@ -58,3 +58,11 @@ Selenium Grid Console is available via [http://localhost:4444/grid/console](http
 Once RabbitMQ is running you can access Management UI via: [http://localhost:15672/](http://localhost:15672/)
 Credentials are: rabbitmq/rabbitmq
 
+
+### List all scenarios using mini formatter
+
+```shell
+# assuming that you're in the repo dir:
+PYTHONPATH=./ behave -d -f mini behave/features/ --no-summary
+```
+
