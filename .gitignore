@@ -104,3 +104,4 @@ venv.bak/
 .mypy_cache/
 .idea/
 %allure_result_folder%/
+
