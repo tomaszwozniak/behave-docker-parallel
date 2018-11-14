@@ -7,7 +7,7 @@ def step_impl(context, user):
     pass
 
 
-@when('I create Stuff user')
+@when('I create Staff user')
 def step_impl(context):
     sleep(1)
 
@@ -22,17 +22,17 @@ def step_impl(context):
     sleep(2)
 
 
-@when('I remove Stuff user')
+@when('I remove Staff user')
 def step_impl(context):
     sleep(2)
 
 
-@then('Stuff user is visible on user list page')
+@then('Staff user is visible on user list page')
 def step_impl(context):
     sleep(2)
 
 
-@then('I should be able to login as stuff user')
+@then('I should be able to login as Staff user')
 def step_impl(context):
     sleep(2)
 
@@ -42,7 +42,7 @@ def step_impl(context):
     sleep(2)
 
 
-@then('Stuff user is not visible on user list page')
+@then('Staff user is not visible on user list page')
 def step_impl(context):
     sleep(2)
 
