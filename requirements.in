@@ -1,0 +1,6 @@
+allure-behave
+behave
+celery
+docker-compose
+selenium
+pip-tools
