@@ -32,6 +32,15 @@ services:
     environment:
       - HUB_HOST=selenium-hub
       - HUB_PORT=4444
+# there's a bug in geckodriver https://github.com/mozilla/geckodriver/issues/1354
+# that unfortunately doesn't allow for changing screen resolution of headless 
+# FF and thus ATM we have to run it in XVFB
+# This way we can take hi-res screenshots. Otherwise when you use headless FF
+# then screenshot resolution will be only 1356x694px or similar!
+#      - START_XVFB=false
+      - SCREEN_WIDTH=1600
+      - SCREEN_HEIGHT=2200
+
   chrome:
     image: selenium/node-chrome:3.141.5-astatine
     networks:
@@ -49,6 +58,10 @@ services:
     environment:
       - HUB_HOST=selenium-hub
       - HUB_PORT=4444
+      - START_XVFB=false
+      - SCREEN_WIDTH=1600
+      - SCREEN_HEIGHT=2200
+
   rabbit:
     image: "rabbitmq:3-management"
     hostname: "rabbit"
