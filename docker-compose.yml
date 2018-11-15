@@ -49,9 +49,9 @@ services:
     environment:
       - HUB_HOST=selenium-hub
       - HUB_PORT=4444
-  rabbit1:
+  rabbit:
     image: "rabbitmq:3-management"
-    hostname: "rabbit1"
+    hostname: "rabbit"
     networks:
       - grid
     environment:
@@ -62,8 +62,7 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
-    labels:
-      NAME: "rabbitmq1"
+
   worker:
     build: .
     networks:
@@ -75,14 +74,14 @@ services:
             - .:/opt/testing
   flower:
     build: flower
-    command: flower --address=0.0.0.0 --port=5555 --broker_api=http://rabbitmq:rabbitmq@rabbit1:15672/api/
     networks:
       - grid
       - queue
+    command: flower --address=0.0.0.0 --port=5555 --broker_api=http://rabbitmq:rabbitmq@rabbit:15672/api/
     environment:
-        - CELERY_BROKER_URL=pyamqp://rabbitmq:rabbitmq@rabbit1//
+        - CELERY_BROKER_URL=pyamqp://rabbitmq:rabbitmq@rabbit//
     links:
-        - rabbit1
+        - rabbit
     ports:
         - "5555:5555"
 
