@@ -17,7 +17,6 @@ app.conf.send_task_sent_event = True
 REPLACE_CHARS = ("Scenario: ", "Scenario Outline: ", "\r")
 
 
-@app.task(bind=True)
 @contextlib.contextmanager
 def set_env(environ: Dict[str, str]):
     """Temporarily set the process environment variables.
@@ -36,6 +35,13 @@ def set_env(environ: Dict[str, str]):
         os.environ.update(old_environ)
 
 
+@app.task(
+    bind=True,
+    autoretry_for=(Exception,),
+    retry_kwargs={"max_retries": 3},
+    retry_backoff=10,
+    broker_pool_limit=None,
+)
 def delegate_test(self, browser: str, scenario: str):
         return string
 
