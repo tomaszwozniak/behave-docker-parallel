@@ -3,12 +3,25 @@ services:
   selenium-hub:
     image: selenium/hub:3.141.5-astatine
     container_name: selenium-hub
+    healthcheck:
+        test: ["CMD", "/opt/bin/check-grid.sh", "--host", "0.0.0.0", "--port", "4444"]
+        interval: 5s
+        timeout: 10s
+        retries: 2
+        start_period: 40s
     ports:
       - "4444:4444"
+
   firefox:
     image: selenium/node-firefox:3.141.5-astatine
     depends_on:
       - selenium-hub
+    healthcheck:
+        test: ["CMD", "/opt/bin/check-grid.sh", "--host", "selenium-hub", "--port", "4444"]
+        interval: 5s
+        timeout: 5s
+        retries: 2
+        start_period: 40s
     environment:
       - HUB_HOST=selenium-hub
       - HUB_PORT=4444
@@ -16,6 +29,12 @@ services:
     image: selenium/node-chrome:3.141.5-astatine
     depends_on:
       - selenium-hub
+    healthcheck:
+        test: ["CMD", "/opt/bin/check-grid.sh", "--host", "selenium-hub", "--port", "4444"]
+        interval: 5s
+        timeout: 5s
+        retries: 2
+        start_period: 40s
     environment:
       - HUB_HOST=selenium-hub
       - HUB_PORT=4444
