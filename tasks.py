@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
+import contextlib
+import os
 import sys
+from typing import Dict
 
 from celery import Celery, states
-from celery.exceptions import Ignore
 from behave.__main__ import main as behave_main
 
 from io import StringIO
@@ -15,11 +18,25 @@ REPLACE_CHARS = ("Scenario: ", "Scenario Outline: ", "\r")
 
 
 @app.task(bind=True)
-def delegate_test(self, scenario):
+@contextlib.contextmanager
+def set_env(environ: Dict[str, str]):
+    """Temporarily set the process environment variables.
 
     def replace_char(string):
         for char in REPLACE_CHARS:
             string = string.replace(char, '')
+    SRC: https://stackoverflow.com/a/34333710
+    """
+    old_environ = dict(os.environ)
+    os.environ.update(environ)
+    try:
+        yield
+    finally:
+        os.environ.clear()
+        os.environ.update(old_environ)
+
+
+def delegate_test(self, browser: str, scenario: str):
         return string
 
     argstable = [
@@ -38,9 +55,12 @@ def delegate_test(self, scenario):
 
     old_stdout = sys.stdout
     io = StringIO()
-
     sys.stdout = io
-    behave_main(argstable)
+
+    # set env var that decides in which browser the test should be executed
+    with set_env({"BROWSER": browser}):
+        behave_main(argstable)
+
     sys.stdout = old_stdout
     behave_result = io.getvalue()
 
