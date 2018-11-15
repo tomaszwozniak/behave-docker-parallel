@@ -71,7 +71,8 @@ services:
     environment:
       PYTHONPATH: "/opt/testing"
     volumes:
-            - .:/opt/testing
+        - .:/opt/testing
+
   flower:
     build: flower
     networks:
