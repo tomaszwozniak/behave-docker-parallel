@@ -23,12 +23,18 @@ def delegate_test(self, scenario):
         return string
 
     argstable = [
-        'behave/features/django_admin/',
-        '-n', '{}{}'.format(replace_char(scenario), '$' if 'Outline' not in scenario else ''),
-        '-f', 'allure_behave.formatter:AllureFormatter',
-        '-f', 'pretty',
-        '-o', '%allure_result_folder%',
-        '--no-skipped']
+        "behave/features/django_admin/",
+        "--no-skipped",
+        "--format",
+        "pretty",
+        # disable allure reports for now as hundreds of unnecessary json
+        # reports are being generated
+        #'--format', 'allure',
+        #'--outfile', 'allure_results',
+        "--logging-filter=-root",
+        "--name",
+        replace_char(scenario),
+    ]
 
     old_stdout = sys.stdout
     io = StringIO()
