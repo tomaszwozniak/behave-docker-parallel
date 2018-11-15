@@ -45,5 +45,5 @@ def before_all(context):
     )
 
 
-def after_all(context):
+def after_scenario(context, scenario):
     context.browser.quit()
