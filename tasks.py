@@ -21,9 +21,6 @@ REPLACE_CHARS = ("Scenario: ", "Scenario Outline: ", "\r")
 def set_env(environ: Dict[str, str]):
     """Temporarily set the process environment variables.
 
-    def replace_char(string):
-        for char in REPLACE_CHARS:
-            string = string.replace(char, '')
     SRC: https://stackoverflow.com/a/34333710
     """
     old_environ = dict(os.environ)
@@ -43,6 +40,9 @@ def set_env(environ: Dict[str, str]):
     broker_pool_limit=None,
 )
 def delegate_test(self, browser: str, scenario: str):
+    def replace_char(string: str) -> str:
+        for chars in REPLACE_CHARS:
+            string = string.replace(chars, "")
         return string
 
     argstable = [
