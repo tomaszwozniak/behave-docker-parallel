@@ -1,5 +1,6 @@
-version: "3"
+version: "3.7"
 services:
+
   selenium-hub:
     image: selenium/hub:3.141.5-astatine
     container_name: selenium-hub
