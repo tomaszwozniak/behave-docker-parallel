@@ -2,12 +2,12 @@ from behave import given, when, then
 from time import sleep
 
 
-@given('I am logged as {} user')
+@given("I am logged as {} user")
 def step_impl(context, user):
     pass
 
 
-@when('I create Staff user')
+@when("I create Staff user")
 def step_impl(context):
     sleep(1)
 
@@ -22,17 +22,17 @@ def step_impl(context):
     sleep(2)
 
 
-@when('I remove Staff user')
+@when("I remove Staff user")
 def step_impl(context):
     sleep(2)
 
 
-@then('Staff user is visible on user list page')
+@then("Staff user is visible on user list page")
 def step_impl(context):
     sleep(2)
 
 
-@then('I should be able to login as Staff user')
+@then("I should be able to login as Staff user")
 def step_impl(context):
     sleep(2)
 
@@ -42,17 +42,17 @@ def step_impl(context):
     sleep(2)
 
 
-@then('Staff user is not visible on user list page')
+@then("Staff user is not visible on user list page")
 def step_impl(context):
     sleep(2)
 
 
-@when('I create new group')
+@when("I create new group")
 def step_impl(context):
     sleep(5)
 
 
-@then('Created group is visible on the list')
+@then("Created group is visible on the list")
 def step_impl(context):
     sleep(1)
 
@@ -67,12 +67,12 @@ def step_impl(context):
     sleep(1)
 
 
-@when('I remove previously created group')
+@when("I remove previously created group")
 def step_impl(context):
     sleep(3)
 
 
-@then('Group is not visible on the list')
+@then("Group is not visible on the list")
 def step_impl(context):
     sleep(1)
-    assert False, 'something went wrong'
+    assert False, "something went wrong"
