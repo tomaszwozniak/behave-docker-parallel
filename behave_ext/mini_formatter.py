@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from __future__ import absolute_import
 from behave.formatter.base import Formatter
 
 
@@ -9,6 +7,7 @@ class MiniFormatter(Formatter):
     Provides a simple plain formatter without coloring/formatting.
     The formatter displays only scenario name
     """
+
     name = "plain"
     description = "Very basic formatter with maximum compatibility"
 
