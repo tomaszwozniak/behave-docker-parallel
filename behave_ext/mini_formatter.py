@@ -18,6 +18,16 @@ class MiniFormatter(Formatter):
     RAISE_OUTPUT_ERRORS = True
 
     def scenario(self, scenario):
-        text = u"%s: %s" % (scenario.keyword, scenario.name)
-        self.stream.write(text)
-        self.stream.write(u"\n")
+        skip_config_tags = [
+            tag.replace("-", "")
+            for tag in str(self.config.tags).split()
+            if tag.startswith("-")
+        ]
+        has_feature_skip_tags = any(
+            skip_tag in scenario.feature.tags for skip_tag in skip_config_tags
+        )
+        has_scenario_skip_tags = any(
+            skip_tag in scenario.tags for skip_tag in skip_config_tags
+        )
+        if not has_scenario_skip_tags and not has_feature_skip_tags:
+            self.stream.write(f"{scenario.name}\n")
