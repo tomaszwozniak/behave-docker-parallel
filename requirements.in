@@ -1,5 +1,6 @@
 allure-behave
 behave
+black
 celery
 docker-compose
 selenium
