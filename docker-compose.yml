@@ -4,6 +4,8 @@ services:
   selenium-hub:
     image: selenium/hub:3.141.5-astatine
     container_name: selenium-hub
+    networks:
+      - grid
     healthcheck:
         test: ["CMD", "/opt/bin/check-grid.sh", "--host", "0.0.0.0", "--port", "4444"]
         interval: 5s
@@ -15,6 +17,8 @@ services:
 
   firefox:
     image: selenium/node-firefox:3.141.5-astatine
+    networks:
+      - grid
     volumes:
       - /dev/shm:/dev/shm
     depends_on:
@@ -30,6 +34,8 @@ services:
       - HUB_PORT=4444
   chrome:
     image: selenium/node-chrome:3.141.5-astatine
+    networks:
+      - grid
     volumes:
       - /dev/shm:/dev/shm
     depends_on:
@@ -46,6 +52,8 @@ services:
   rabbit1:
     image: "rabbitmq:3-management"
     hostname: "rabbit1"
+    networks:
+      - grid
     environment:
       RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
       RABBITMQ_DEFAULT_USER: "rabbitmq"
@@ -58,6 +66,9 @@ services:
       NAME: "rabbitmq1"
   worker:
     build: .
+    networks:
+      - grid
+      - queue
     environment:
       PYTHONPATH: "/opt/testing"
     volumes:
@@ -65,9 +76,18 @@ services:
   flower:
     build: flower
     command: flower --address=0.0.0.0 --port=5555 --broker_api=http://rabbitmq:rabbitmq@rabbit1:15672/api/
+    networks:
+      - grid
+      - queue
     environment:
         - CELERY_BROKER_URL=pyamqp://rabbitmq:rabbitmq@rabbit1//
     links:
         - rabbit1
     ports:
         - "5555:5555"
+
+
+networks:
+  grid:
+  queue:
+
