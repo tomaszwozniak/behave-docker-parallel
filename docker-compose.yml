@@ -1,27 +1,72 @@
-version: "3"
+version: "3.7"
 services:
+
   selenium-hub:
     image: selenium/hub:3.141.5-astatine
     container_name: selenium-hub
+    networks:
+      - grid
+    healthcheck:
+        test: ["CMD", "/opt/bin/check-grid.sh", "--host", "0.0.0.0", "--port", "4444"]
+        interval: 5s
+        timeout: 10s
+        retries: 2
+        start_period: 40s
     ports:
       - "4444:4444"
+
   firefox:
     image: selenium/node-firefox:3.141.5-astatine
+    networks:
+      - grid
+    volumes:
+      - /dev/shm:/dev/shm
     depends_on:
       - selenium-hub
+    healthcheck:
+        test: ["CMD", "/opt/bin/check-grid.sh", "--host", "selenium-hub", "--port", "4444"]
+        interval: 5s
+        timeout: 5s
+        retries: 2
+        start_period: 40s
     environment:
       - HUB_HOST=selenium-hub
       - HUB_PORT=4444
+# there's a bug in geckodriver https://github.com/mozilla/geckodriver/issues/1354
+# that unfortunately doesn't allow for changing screen resolution of headless 
+# FF and thus ATM we have to run it in XVFB
+# This way we can take hi-res screenshots. Otherwise when you use headless FF
+# then screenshot resolution will be only 1356x694px or similar!
+#      - START_XVFB=false
+      - SCREEN_WIDTH=1600
+      - SCREEN_HEIGHT=2200
+
   chrome:
     image: selenium/node-chrome:3.141.5-astatine
+    networks:
+      - grid
+    volumes:
+      - /dev/shm:/dev/shm
     depends_on:
       - selenium-hub
+    healthcheck:
+        test: ["CMD", "/opt/bin/check-grid.sh", "--host", "selenium-hub", "--port", "4444"]
+        interval: 5s
+        timeout: 5s
+        retries: 2
+        start_period: 40s
     environment:
       - HUB_HOST=selenium-hub
       - HUB_PORT=4444
-  rabbit1:
+      - START_XVFB=false
+      - SCREEN_WIDTH=1600
+      - SCREEN_HEIGHT=2200
+
+  rabbit:
     image: "rabbitmq:3-management"
-    hostname: "rabbit1"
+    hostname: "rabbit"
+    networks:
+      - grid
     environment:
       RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
       RABBITMQ_DEFAULT_USER: "rabbitmq"
@@ -30,20 +75,32 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
-    labels:
-      NAME: "rabbitmq1"
+
   worker:
     build: .
+    networks:
+      - grid
+      - queue
     environment:
       PYTHONPATH: "/opt/testing"
     volumes:
-            - .:/opt/testing
+        - .:/opt/testing
+
   flower:
     build: flower
-    command: flower --address=0.0.0.0 --port=5555 --broker_api=http://rabbitmq:rabbitmq@rabbit1:15672/api/
+    networks:
+      - grid
+      - queue
+    command: flower --address=0.0.0.0 --port=5555 --broker_api=http://rabbitmq:rabbitmq@rabbit:15672/api/
     environment:
-        - CELERY_BROKER_URL=pyamqp://rabbitmq:rabbitmq@rabbit1//
+        - CELERY_BROKER_URL=pyamqp://rabbitmq:rabbitmq@rabbit//
     links:
-        - rabbit1
+        - rabbit
     ports:
         - "5555:5555"
+
+
+networks:
+  grid:
+  queue:
+

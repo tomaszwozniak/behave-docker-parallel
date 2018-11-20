@@ -20,9 +20,9 @@ pip-compile -U -o requirements.txt requirements.in
 
 ## Start Hub & Browsers
 
-Start Selenium Hub and 1 Firefox & 1 Chrome
+Start Selenium Hub and 1 Firefox, 1 Chrome & 2 workers (1 for each browser)
 ```shell
-docker-compose up --build
+docker-compose up --build --scale worker=2
 ```
 
 Alternatively you can spin up multiple workers and instances of FF and/or Chrome:
@@ -37,12 +37,40 @@ docker-compose up --build --scale firefox=3 --scale chrome=3 --scale worker=6
 ./run_tests.sh
 ```
 
-## TIPS
+## Management & Monitoring Consoles
 
-### Selenium Grid Console
+Once all services are up & running you can access:
 
-Selenium Grid Console is available via [http://localhost:4444/grid/console](http://localhost:4444/grid/console)
+* Selenium Grid Console [http://localhost:4444/grid/console](http://localhost:4444/grid/console)
+* RabbitMQ Management UI Access [http://localhost:15672/](http://localhost:15672/) Credentials are: rabbitmq/rabbitmq
+* Flower (Celery monitoring tool) [http://localhost:5555/](http://localhost:5555/)
 
+
+## Tips
+
+### Checking health status of Selenium Hub & Browsers
+
+You can check the health status of selenium-hub or selected browser with:
+
+```shell
+docker inspect --format='{{json .State.Health.Status}}' selenium-hub
+# or
+docker inspect --format='{{json .State.Health.Status}}' #BROWSER_INSTANCE_ID
+```
+
+or you can use a "get'em all" one-liner that displays health statuses for all 
+browser instances and selenium-hub in one go:
+```
+docker inspect --format '{{ .Name }} -> {{ .State.Health.Status }}' \
+    $(docker ps -a --format "table {{.Names}}\t{{.ID}}" |\
+    grep "chrome\|firefox\|hub" |\
+    awk '{printf $NF" "}')
+```
+
+btw. you can always create a handy alias for that one-liner:
+```shell
+alias hh='docker inspect --format "{{ .Name }} -> {{ .State.Health.Status }}" $(docker ps -a --format "table {{.Names}}\t{{.ID}}" | grep "chrome\|firefox\|hub" | awk '"'"'{printf $NF" "}'"'"')'
+```
 
 ### Serving allure report
 
@@ -51,12 +79,6 @@ Selenium Grid Console is available via [http://localhost:4444/grid/console](http
     * `npm install -g allure-commandline --save-dev`
 * Serve the report `allure serve -p 54321 allure_results`
 * Go to: [http://127.0.0.53:54321/](http://127.0.0.53:54321/)
-
-
-### RabbitMQ Management UI Access
-
-Once RabbitMQ is running you can access Management UI via: [http://localhost:15672/](http://localhost:15672/)
-Credentials are: rabbitmq/rabbitmq
 
 
 ### List all scenarios using mini formatter
