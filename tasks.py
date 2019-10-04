@@ -45,14 +45,10 @@ def delegate_test(self, browser: str, scenario: str):
         return string
 
     argstable = [
-        "behave/features/django_admin/",
+        "features/",
         "--no-skipped",
-        "--format",
-        "pretty",
-        # disable allure reports for now as hundreds of unnecessary json
-        # reports are being generated
-        #'--format', 'allure',
-        #'--outfile', 'allure_results',
+        "--format=allure_behave.formatter:AllureFormatter",
+        f"--outfile={browser}/{self.request.id}/",
         "--logging-filter=-root",
         "--name",
         replace_char(scenario),
