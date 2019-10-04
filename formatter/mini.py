@@ -2,20 +2,22 @@
 from behave.formatter.base import Formatter
 
 
-class MiniFormatter(Formatter):
+class Mini(Formatter):
     """
     Provides a simple plain formatter without coloring/formatting.
     The formatter displays only scenario name
     """
 
-    name = "plain"
-    description = "Very basic formatter with maximum compatibility"
+    description = "Print out only scenario titles"
 
-    SHOW_MULTI_LINE = False
-    SHOW_TAGS = False
-    SHOW_ALIGNED_KEYWORDS = False
-    indent_size = 0
+    DEFAULT_INDENT_SIZE = 0
     RAISE_OUTPUT_ERRORS = True
+    SHOW_ALIGNED_KEYWORDS = False
+    SHOW_BACKGROUNDS = False
+    SHOW_MULTI_LINE = False
+    SHOW_RULES = False
+    SHOW_TAGS = False
+    SHOW_SUMMARY = False
 
     def scenario(self, scenario):
         skip_config_tags = [
