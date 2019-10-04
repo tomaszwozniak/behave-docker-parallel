@@ -43,7 +43,6 @@ Once all services are up & running you can access:
 
 * Selenium Grid Console [http://localhost:4444/grid/console](http://localhost:4444/grid/console)
 * RabbitMQ Management UI Access [http://localhost:15672/](http://localhost:15672/) Credentials are: rabbitmq/rabbitmq
-* Flower (Celery monitoring tool) [http://localhost:5555/](http://localhost:5555/)
 
 
 ## Tips

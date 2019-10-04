@@ -86,20 +86,6 @@ services:
     volumes:
         - .:/opt/testing
 
-  flower:
-    build: flower
-    networks:
-      - grid
-      - queue
-    command: flower --address=0.0.0.0 --port=5555 --broker_api=http://rabbitmq:rabbitmq@rabbit:15672/api/
-    environment:
-        - CELERY_BROKER_URL=pyamqp://rabbitmq:rabbitmq@rabbit//
-    links:
-        - rabbit
-    ports:
-        - "5555:5555"
-
-
 networks:
   grid:
   queue:
