@@ -35,10 +35,8 @@ def set_env(environ: Dict[str, str]):
 
 @app.task(
     bind=True,
-    autoretry_for=(Exception,),
-    retry_kwargs={"max_retries": 3},
-    retry_backoff=10,
-    broker_pool_limit=None,
+    autoretry_for=(),
+    broker_pool_limit=1,
 )
 def delegate_test(self, browser: str, scenario: str):
     def replace_char(string: str) -> str:
