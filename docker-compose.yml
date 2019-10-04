@@ -61,9 +61,9 @@ services:
 # FF and thus ATM we have to run it in XVFB
 # This way we can take hi-res screenshots. Otherwise when you use headless FF
 # then screenshot resolution will be only 1356x694px or similar!
-#      - START_XVFB=false
-      - SCREEN_WIDTH=1600
-      - SCREEN_HEIGHT=2200
+      - START_XVFB=false
+      - MOZ_HEADLESS_WIDTH=1600
+      - MOZ_HEADLESS_HEIGHT=2200
 
   chrome:
     image: selenium/node-chrome:3.141.59-vanadium
