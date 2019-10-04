@@ -2,6 +2,7 @@ allure-behave
 behave
 black
 celery
+celery[redis]
 docker-compose
 selenium
 pip-tools
