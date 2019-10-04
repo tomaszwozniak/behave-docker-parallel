@@ -65,7 +65,7 @@ def delegate_test(self, browser: str, scenario: str):
     sys.stdout = io
 
     # set env var that decides in which browser the test should be executed
-    with set_env({"BROWSER": browser}):
+    with set_env({"BROWSER": browser, "ALLURE_INDENT_OUTPUT": "2"}):
         behave_main(argstable)
 
     sys.stdout = old_stdout
@@ -74,7 +74,7 @@ def delegate_test(self, browser: str, scenario: str):
     if "1 scenario passed" not in behave_result:
         # manually update the task state
         self.update_state(state=states.FAILURE, meta=behave_result)
-
         raise Exception(behave_result)
+
     return "Pass"
 
