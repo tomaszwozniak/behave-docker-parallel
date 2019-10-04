@@ -62,19 +62,26 @@ services:
       - SCREEN_WIDTH=1600
       - SCREEN_HEIGHT=2200
 
-  rabbit:
-    image: "rabbitmq:3-management"
-    hostname: "rabbit"
+  redis:
+    image: "redis:5.0.6-alpine"
+    hostname: "redis"
     networks:
       - grid
-    environment:
-      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
-      RABBITMQ_DEFAULT_USER: "rabbitmq"
-      RABBITMQ_DEFAULT_PASS: "rabbitmq"
-      RABBITMQ_DEFAULT_VHOST: "/"
+      - queue
     ports:
-      - "15672:15672"
-      - "5672:5672"
+      - "6379:6379"
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    networks:
+      - queue
+    environment:
+    - REDIS_HOSTS=local:redis:6379
+    ports:
+    - "8081:8081"
 
   worker:
     build: .

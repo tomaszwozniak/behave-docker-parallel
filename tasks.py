@@ -9,8 +9,9 @@ from behave.__main__ import main as behave_main
 
 from io import StringIO
 
-app = Celery("tasks", broker="pyamqp://rabbitmq:rabbitmq@rabbit//")
+app = Celery("tasks", broker="redis://redis@redis:6379//")
 app.conf.task_default_queue = "behave"
+app.conf.broker_transport_options = {'visibility_timeout': 3600}
 app.conf.send_events = True
 app.conf.send_task_sent_event = True
 

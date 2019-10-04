@@ -42,7 +42,7 @@ docker-compose up --build --scale firefox=3 --scale chrome=3 --scale worker=6
 Once all services are up & running you can access:
 
 * Selenium Grid Console [http://localhost:4444/grid/console](http://localhost:4444/grid/console)
-* RabbitMQ Management UI Access [http://localhost:15672/](http://localhost:15672/) Credentials are: rabbitmq/rabbitmq
+* Redis Commander (Redis monitoring tool) [http://localhost:8081/](http://localhost:8081/)
 
 
 ## Tips
