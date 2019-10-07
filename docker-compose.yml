@@ -122,6 +122,8 @@ services:
   worker:
     build: .
     command: [celery, worker, --uid=celery, --app=tasks.app, --loglevel=DEBUG, --queues=behave, --concurrency=1]
+    depends_on:
+      - redis
     networks:
       - grid
       - queue
