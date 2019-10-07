@@ -73,3 +73,4 @@ def delegate_test(self, browser: str, scenario: str):
     logger.info(behave_result)
     if exit_code == 1:
         self.update_state(state=states.FAILURE, meta=behave_result)
+    sys.exit(exit_code)
