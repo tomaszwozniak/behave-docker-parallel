@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 import contextlib
+import io
 import os
 import sys
 from typing import Dict
+from contextlib import redirect_stdout
 
 from celery import Celery, states
+from celery.utils.log import get_task_logger
 from behave.__main__ import main as behave_main
-
-from io import StringIO
 
 app = Celery("tasks", broker="redis://redis@redis:6379//")
 app.conf.task_default_queue = "behave"
@@ -16,6 +17,8 @@ app.conf.send_events = True
 app.conf.send_task_sent_event = True
 
 REPLACE_CHARS = ("Scenario: ", "Scenario Outline: ", "\r")
+
+logger = get_task_logger(__name__)
 
 
 @contextlib.contextmanager
@@ -56,21 +59,17 @@ def delegate_test(self, browser: str, scenario: str):
         replace_char(scenario),
     ]
 
-    old_stdout = sys.stdout
-    io = StringIO()
-    sys.stdout = io
-
     # set env var that decides in which browser the test should be executed
-    with set_env({"BROWSER": browser, "ALLURE_INDENT_OUTPUT": "2"}):
-        exit_code = behave_main(args_list)
+    env_vars = {
+        "BROWSER": browser,
+        "ALLURE_INDENT_OUTPUT": "2"
+    }
+    with set_env(env_vars):
+        temp_redirect = io.StringIO()
+        with redirect_stdout(temp_redirect):
+            exit_code = behave_main(args_list)
 
-    sys.stdout = old_stdout
-    behave_result = io.getvalue()
-
-    if "1 scenario passed" not in behave_result:
-        # manually update the task state
+    behave_result = temp_redirect.getvalue()
+    logger.info(behave_result)
+    if exit_code == 1:
         self.update_state(state=states.FAILURE, meta=behave_result)
-        raise Exception(behave_result)
-
-    return "Pass"
-
