@@ -8,5 +8,3 @@ RUN groupadd -r celery --gid 1000 && useradd --no-log-init -r -g celery --uid 10
 COPY requirements.txt ./
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
-
-CMD ["celery", "worker", "--uid", "celery", "--app", "tasks", "--loglevel", "debug", "--queues", "behave", "--concurrency", "1"]
