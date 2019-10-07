@@ -50,7 +50,7 @@ def delegate_test(self, browser: str, scenario: str):
         "features/",
         "--no-skipped",
         "--format=allure_behave.formatter:AllureFormatter",
-        f"--outfile={browser}/{self.request.id}/",
+        f"--outfile={browser}_results/",
         "--logging-filter=-root",
         "--name",
         replace_char(scenario),
