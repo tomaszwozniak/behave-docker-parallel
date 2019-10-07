@@ -1,5 +1,4 @@
 from behave import given, when, then
-from time import sleep
 
 
 @given("I am logged as {} user")
@@ -9,70 +8,69 @@ def step_impl(context, user):
 
 @when("I create Staff user")
 def step_impl(context):
-    sleep(1)
+    pass
 
 
 @when('I change "Last name" to "Johnson"')
 def step_impl(context):
-    sleep(2)
+    pass
 
 
 @when('I click "Save and continue editing" button')
 def step_impl(context):
-    sleep(2)
+    pass
 
 
 @when("I remove Staff user")
 def step_impl(context):
-    sleep(2)
+    pass
 
 
 @then("Staff user is visible on user list page")
 def step_impl(context):
-    sleep(2)
+    pass
 
 
 @then("I should be able to login as Staff user")
 def step_impl(context):
-    sleep(2)
+    pass
 
 
 @then('I should see "Johnson" in "Last name" field')
 def step_impl(context):
-    sleep(2)
+    pass
 
 
 @then("Staff user is not visible on user list page")
 def step_impl(context):
-    sleep(2)
+    pass
 
 
 @when("I create new group")
 def step_impl(context):
-    sleep(5)
+    pass
 
 
 @then("Created group is visible on the list")
 def step_impl(context):
-    sleep(1)
+    pass
 
 
 @when('I add permission "can add user"')
 def step_impl(context):
-    sleep(3)
+    pass
 
 
 @then('I should see "can add user" in "Choosen permissions"')
 def step_impl(context):
-    sleep(1)
+    pass
 
 
 @when("I remove previously created group")
 def step_impl(context):
-    sleep(3)
+    pass
 
 
 @then("Group is not visible on the list")
 def step_impl(context):
-    sleep(1)
     assert False, "something went wrong"
