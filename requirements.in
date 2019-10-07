@@ -4,5 +4,9 @@ black
 celery
 celery[redis]
 docker-compose
-selenium
+flake8
+ipdb
+isort
 pip-tools
+pre-commit
+selenium
