@@ -18,13 +18,13 @@ def update_allure_feature_name(results_dir: str, prefix: str):
     for filename in os.listdir(results_dir_path):
         if filename.endswith(".json"):
             result_file = os.path.join(results_dir_path, filename)
-            with open(result_file, "r") as f:
-                report = json.loads(f.read())
+            with open(result_file, "r") as json_file:
+                report = json.loads(json_file.read())
                 report["name"] = f"{prefix} - {report['name']}"
                 report["historyId"] = f"{prefix}{report['historyId']}"
                 report["uuid"] = f"{prefix}{report['uuid']}"
-            with open(result_file, "w") as f:
-                f.write(json.dumps(report, indent=2))
+            with open(result_file, "w") as json_file:
+                json.dump(report, json_file, indent=2, ensure_ascii=False)
                 update_count += 1
     print(f"Updated {update_count} JSON reports")
 
