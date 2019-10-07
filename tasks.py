@@ -37,6 +37,8 @@ def set_env(environ: Dict[str, str]):
     bind=True,
     autoretry_for=(),
     broker_pool_limit=1,
+    name="add scenario to queue",
+    queue="behave",
 )
 def delegate_test(self, browser: str, scenario: str):
     def replace_char(string: str) -> str:
