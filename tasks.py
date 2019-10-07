@@ -46,7 +46,7 @@ def delegate_test(self, browser: str, scenario: str):
             string = string.replace(chars, "")
         return string
 
-    argstable = [
+    args_list = [
         "features/",
         "--no-skipped",
         "--format=allure_behave.formatter:AllureFormatter",
@@ -62,7 +62,7 @@ def delegate_test(self, browser: str, scenario: str):
 
     # set env var that decides in which browser the test should be executed
     with set_env({"BROWSER": browser, "ALLURE_INDENT_OUTPUT": "2"}):
-        behave_main(argstable)
+        exit_code = behave_main(args_list)
 
     sys.stdout = old_stdout
     behave_result = io.getvalue()
