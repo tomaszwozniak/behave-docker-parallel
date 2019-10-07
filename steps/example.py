@@ -1,4 +1,6 @@
-from behave import given, when, then
+# -*- coding: utf-8 -*-
+# flake8: noqa
+from behave import given, then, when
 
 
 @given("I am logged as {} user")

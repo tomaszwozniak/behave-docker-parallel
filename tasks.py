@@ -3,16 +3,16 @@ import contextlib
 import io
 import os
 import sys
-from typing import Dict
 from contextlib import redirect_stdout
+from typing import Dict
 
+from behave.__main__ import main as behave_main
 from celery import Celery, states
 from celery.utils.log import get_task_logger
-from behave.__main__ import main as behave_main
 
 app = Celery("tasks", broker="redis://redis@redis:6379//")
 app.conf.task_default_queue = "behave"
-app.conf.broker_transport_options = {'visibility_timeout': 3600}
+app.conf.broker_transport_options = {"visibility_timeout": 3600}
 app.conf.send_events = True
 app.conf.send_task_sent_event = True
 
@@ -61,10 +61,7 @@ def delegate_test(self, browser: str, scenario: str):
     ]
 
     # set env var that decides in which browser the test should be executed
-    env_vars = {
-        "BROWSER": browser,
-        "ALLURE_INDENT_OUTPUT": "2"
-    }
+    env_vars = {"BROWSER": browser, "ALLURE_INDENT_OUTPUT": "2"}
     with set_env(env_vars):
         temp_redirect = io.StringIO()
         with redirect_stdout(temp_redirect):
