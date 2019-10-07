@@ -40,6 +40,7 @@ def set_env(environ: Dict[str, str]):
     bind=True,
     autoretry_for=(),
     broker_pool_limit=1,
+    ignore_result=True,
     name="run scenario",
     queue="behave",
 )
