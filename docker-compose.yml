@@ -2,10 +2,24 @@ version: "3.7"
 services:
 
   selenium-hub:
-    image: selenium/hub:3.141.5-astatine
+    image: selenium/hub:3.141.59-vanadium
     container_name: selenium-hub
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 700M
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: "65536"
+        hard: "65536"
     networks:
       - grid
+    volumes:
+      - /dev/shm:/dev/shm
+    environment:
+      - JAVA_OPTS=-Xmx512m
     healthcheck:
         test: ["CMD", "/opt/bin/check-grid.sh", "--host", "0.0.0.0", "--port", "4444"]
         interval: 5s
@@ -16,7 +30,7 @@ services:
       - "4444:4444"
 
   firefox:
-    image: selenium/node-firefox:3.141.5-astatine
+    image: selenium/node-firefox:3.141.59-vanadium
     networks:
       - grid
     volumes:
@@ -29,6 +43,16 @@ services:
         timeout: 5s
         retries: 2
         start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1G
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: "65536"
+        hard: "65536"
     environment:
       - HUB_HOST=selenium-hub
       - HUB_PORT=4444
@@ -37,12 +61,12 @@ services:
 # FF and thus ATM we have to run it in XVFB
 # This way we can take hi-res screenshots. Otherwise when you use headless FF
 # then screenshot resolution will be only 1356x694px or similar!
-#      - START_XVFB=false
-      - SCREEN_WIDTH=1600
-      - SCREEN_HEIGHT=2200
+      - START_XVFB=false
+      - MOZ_HEADLESS_WIDTH=1600
+      - MOZ_HEADLESS_HEIGHT=2200
 
   chrome:
-    image: selenium/node-chrome:3.141.5-astatine
+    image: selenium/node-chrome:3.141.59-vanadium
     networks:
       - grid
     volumes:
@@ -55,6 +79,16 @@ services:
         timeout: 5s
         retries: 2
         start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1G
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: "65536"
+        hard: "65536"
     environment:
       - HUB_HOST=selenium-hub
       - HUB_PORT=4444
@@ -62,22 +96,34 @@ services:
       - SCREEN_WIDTH=1600
       - SCREEN_HEIGHT=2200
 
-  rabbit:
-    image: "rabbitmq:3-management"
-    hostname: "rabbit"
+  redis:
+    image: "redis:5.0.6-alpine"
+    hostname: "redis"
     networks:
       - grid
-    environment:
-      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
-      RABBITMQ_DEFAULT_USER: "rabbitmq"
-      RABBITMQ_DEFAULT_PASS: "rabbitmq"
-      RABBITMQ_DEFAULT_VHOST: "/"
+      - queue
     ports:
-      - "15672:15672"
-      - "5672:5672"
+      - "6379:6379"
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    depends_on:
+      - redis
+    networks:
+      - queue
+    environment:
+    - REDIS_HOSTS=local:redis:6379
+    ports:
+    - "8081:8081"
 
   worker:
     build: .
+    command: [celery, worker, --uid=celery, --app=tasks.app, --loglevel=DEBUG, --queues=behave, --concurrency=1]
+    depends_on:
+      - redis
     networks:
       - grid
       - queue
@@ -85,20 +131,6 @@ services:
       PYTHONPATH: "/opt/testing"
     volumes:
         - .:/opt/testing
-
-  flower:
-    build: flower
-    networks:
-      - grid
-      - queue
-    command: flower --address=0.0.0.0 --port=5555 --broker_api=http://rabbitmq:rabbitmq@rabbit:15672/api/
-    environment:
-        - CELERY_BROKER_URL=pyamqp://rabbitmq:rabbitmq@rabbit//
-    links:
-        - rabbit
-    ports:
-        - "5555:5555"
-
 
 networks:
   grid:

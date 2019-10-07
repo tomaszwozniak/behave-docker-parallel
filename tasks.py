@@ -1,20 +1,24 @@
 # -*- coding: utf-8 -*-
 import contextlib
+import io
 import os
 import sys
+from contextlib import redirect_stdout
 from typing import Dict
 
-from celery import Celery, states
 from behave.__main__ import main as behave_main
+from celery import Celery, states
+from celery.utils.log import get_task_logger
 
-from io import StringIO
-
-app = Celery("tasks", broker="pyamqp://rabbitmq:rabbitmq@rabbit//")
+app = Celery("tasks", broker="redis://redis@redis:6379//")
 app.conf.task_default_queue = "behave"
+app.conf.broker_transport_options = {"visibility_timeout": 3600}
 app.conf.send_events = True
 app.conf.send_task_sent_event = True
 
 REPLACE_CHARS = ("Scenario: ", "Scenario Outline: ", "\r")
+
+logger = get_task_logger(__name__)
 
 
 @contextlib.contextmanager
@@ -34,10 +38,11 @@ def set_env(environ: Dict[str, str]):
 
 @app.task(
     bind=True,
-    autoretry_for=(Exception,),
-    retry_kwargs={"max_retries": 3},
-    retry_backoff=10,
-    broker_pool_limit=None,
+    autoretry_for=(),
+    broker_pool_limit=1,
+    ignore_result=True,
+    name="run scenario",
+    queue="behave",
 )
 def delegate_test(self, browser: str, scenario: str):
     def replace_char(string: str) -> str:
@@ -45,35 +50,25 @@ def delegate_test(self, browser: str, scenario: str):
             string = string.replace(chars, "")
         return string
 
-    argstable = [
-        "behave/features/django_admin/",
+    args_list = [
+        "features/",
         "--no-skipped",
-        "--format",
-        "pretty",
-        # disable allure reports for now as hundreds of unnecessary json
-        # reports are being generated
-        #'--format', 'allure',
-        #'--outfile', 'allure_results',
+        "--format=allure_behave.formatter:AllureFormatter",
+        f"--outfile={browser}_results/",
         "--logging-filter=-root",
         "--name",
         replace_char(scenario),
     ]
 
-    old_stdout = sys.stdout
-    io = StringIO()
-    sys.stdout = io
-
     # set env var that decides in which browser the test should be executed
-    with set_env({"BROWSER": browser}):
-        behave_main(argstable)
+    env_vars = {"BROWSER": browser, "ALLURE_INDENT_OUTPUT": "2"}
+    with set_env(env_vars):
+        temp_redirect = io.StringIO()
+        with redirect_stdout(temp_redirect):
+            exit_code = behave_main(args_list)
 
-    sys.stdout = old_stdout
-    behave_result = io.getvalue()
-
-    if "1 scenario passed" not in behave_result:
-        # manually update the task state
+    behave_result = temp_redirect.getvalue()
+    logger.info(behave_result)
+    if exit_code == 1:
         self.update_state(state=states.FAILURE, meta=behave_result)
-
-        raise Exception(behave_result)
-    return "Pass"
-
+    sys.exit(exit_code)

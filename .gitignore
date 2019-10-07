@@ -105,3 +105,8 @@ venv.bak/
 .idea/
 %allure_result_folder%/
 
+# test results
+chrome_results
+firefox_results
+results
+report

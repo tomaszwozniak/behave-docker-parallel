@@ -19,7 +19,7 @@ Feature: Managing users
        And I remove Staff user
       Then Staff user is not visible on user list page
 
-  Scenario Outline: Deleting user outline
+  Scenario Outline: Delete user "<user>"
      Given I am logged as <user> user
       When I create Staff user
        And I remove Staff user
